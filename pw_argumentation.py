@@ -28,17 +28,20 @@ class ArgumentAgent (CommunicatingAgent) :
 
     def generate_preferences(self, item_list):
         pref = Preferences()
+        pref.set_criterion_name_list([crit_name for crit_name in CriterionName])
         for item in item_list:
             for crit_name in CriterionName:
                 crit_val = random.choice(list(Value))
+                
                 pref.add_criterion_value(CriterionValue(item, crit_name, crit_val))
-
+                
+                
         self.preference = pref
 
     def print_preferences(self):
         preferences = self.get_preference()
-        for name, value in zip(preferences.get_criterion_name_list(), preferences.get_criterion_value_list()):
-            print(f"{name}:{value}")
+        for crit in preferences.get_criterion_value_list():
+            print(f"{crit.get_item()}, {crit.get_criterion_name()}, {crit.get_value()}")
 
 class ArgumentModel(Model):
     """ ArgumentModel which inherit from Model .
@@ -53,13 +56,12 @@ class ArgumentModel(Model):
         # a. generate_preferences ( preferences )
         # self . schedule .add(a)
         # ...
-
         a1 = ArgumentAgent(self.next_id(), self, "A1")
         a1.generate_preferences(item_list=item_list)
         a2 = ArgumentAgent(self.next_id(), self, "A2")
         a2.generate_preferences(item_list=item_list)
 
-        a1.print_preferences() # marche pas
+        a1.print_preferences()
         a2.print_preferences()
 
         self.schedule.add(a1)
