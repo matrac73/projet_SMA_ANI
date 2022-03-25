@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 
+import sys
+sys.path.append("C:/Users/killi/Desktop/Project2/mesa")
+
+import math
+import random
+
 from communication.preferences.CriterionName import CriterionName
 from communication.preferences.CriterionValue import CriterionValue
 from communication.preferences.Item import Item
 from communication.preferences.Value import Value
+
 
 
 class Preferences:
@@ -66,17 +73,33 @@ class Preferences:
     def most_preferred(self, item_list):
         """Returns the most preferred item from a list.
         """
-        # To be completed
+        best_item = item_list[0]
+        for item in item_list[1:]:
+            if self.is_preferred_item(item, best_item):
+                best_item = item 
         return best_item
 
-    def is_item_among_top_10_percent(self, item):
+    def is_item_among_top_10_percent(self, item, item_list):
         """
         Return whether a given item is among the top 10 percent of the preferred items.
 
         :return: a boolean, True means that the item is among the favourite ones
         """
-        # To be completed
+        number_of_places_on_podium = math.ceil(len(item_list)*.1)
+
+        number_of_better_items = 0
+
+        for other_item in item_list:
+            if self.is_preferred_item(other_item, item):
+                number_of_better_items += 1
+
+        
+        is_top_item = number_of_better_items < number_of_places_on_podium
+
         return is_top_item
+
+    
+
 
 
 if __name__ == '__main__':
@@ -121,3 +144,6 @@ if __name__ == '__main__':
     print('Electric Engine (for agent 1) = {}'.format(electric_engine.get_score(agent_pref)))
     print('Diesel Engine (for agent 1) = {}'.format(diesel_engine.get_score(agent_pref)))
     print('Most preferred item is : {}'.format(agent_pref.most_preferred([diesel_engine, electric_engine]).get_name()))
+
+
+    print(f"{electric_engine.get_name()} is among top 10? {agent_pref.is_item_among_top_10_percent(electric_engine, [electric_engine, diesel_engine])}")

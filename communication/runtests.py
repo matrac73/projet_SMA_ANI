@@ -5,7 +5,8 @@ Testing all the functionalities of the communication package.
 
 from mesa import Model
 from mesa.time import RandomActivation
-
+import sys
+sys.path.append("../")
 from communication.agent.CommunicatingAgent import CommunicatingAgent
 from communication.mailbox.Mailbox import Mailbox
 from communication.message.Message import Message
