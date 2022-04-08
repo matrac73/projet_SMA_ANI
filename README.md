@@ -38,11 +38,20 @@ Blabla
     $ blabla
 ```
 
-## Files
+### Files architecture
 
-* ``blabla``: blabla
-* ``blabla``: blabla
-
+    .
+    ├── .gitignore                      # avoid unecessary data exchange between git and local files
+    ├── communication                                  
+    |   ├── blabla                      
+    │   │   └── blabla   
+    │   ├── blabla                        
+    │   │   └── blabla                  # blabla
+    │   └── Dactylo
+    │       └── blabla                  # blabla
+    ├── README.me                       # presents the GIT repository
+    └── blabla
+        
 ## Further Reading
 
 BLABLA
