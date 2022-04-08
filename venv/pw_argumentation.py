@@ -1,5 +1,6 @@
 import sys
 sys.path.append("C:/Users/mathi/Bureau/projet_SMA_ANI")
+sys.path.append("C:/Users/killi/desktop/sma")
 
 from mesa import Model
 from mesa.time import RandomActivation
@@ -24,9 +25,26 @@ class ArgumentAgent (CommunicatingAgent) :
     def __init__(self, unique_id, model, name):
         super().__init__(unique_id, model, name)
         self.preference = None
+        self.accepted_item = None
+
 
     def step (self) :
         super().step()
+        list_messages = self.get_new_messages()
+        for message in list_messages:
+            print(message)
+            if message.get_performative() == MessagePerformative.PROPOSE:
+                if self.get_preference().is_item_among_top_10_percent(message.get_content(), argument_model.item_list):
+                    self.send_message(Message(self.get_name(), message.get_exp(), MessagePerformative.ACCEPT, message.get_content()))
+            
+            if message.get_performative() == MessagePerformative.ASK_WHY:
+                #self.send_message(Message(self.get_name(), message.get_exp(), MessagePerformative.ASK_WHY, self.__v))
+                pass
+            
+            if message.get_performative() == MessagePerformative.COMMIT:
+                #self.send_message(Message(self.get_name(), message.get_exp(), MessagePerformative.ASK_WHY, self.__v))
+                pass
+                
 
     def get_preference(self):
         return self.preference
@@ -54,7 +72,7 @@ class ArgumentModel(Model):
         super().__init__()
         self.schedule = RandomActivation(self)
         self.__messages_service = MessageService(self.schedule)
-        
+        self.item_list = item_list
         a1 = ArgumentAgent(self.next_id(), self, "A1")
         a1.generate_preferences(item_list=item_list)
         a2 = ArgumentAgent(self.next_id(), self, "A2")
@@ -79,16 +97,28 @@ if __name__ == "__main__":
 
     argument_model = ArgumentModel([electric_engine, diesel_engine])
 
-    Alice = CommunicatingAgent(1, argument_model, 'A1')
-    Bob = CommunicatingAgent(2, argument_model, 'A2')
+    Alice =argument_model.schedule.agents[0]
+    Bob = argument_model.schedule.agents[1]
+    assert(Alice.get_name() == "A1")
+    assert(Bob.get_name() == "A2")
+    print("*     get_name() => OK")
 
-    message_1 = Message('A1', 'A2', MessagePerformative.PROPOSE, diesel_engine)
-    message_2 = Message('A2', 'A1', MessagePerformative.ACCEPT, diesel_engine)
-    # message_3 = Message('A2', 'A1', 102, diesel_engine)
+    Alice.send_message(Message("A1", "A2", MessagePerformative.PROPOSE, electric_engine))
+    
 
-    Alice.send_message(message_1)
-    Bob.send_message(message_2)
+    #Alice.send_message(message_1)
+    messages_bob = Bob.get_new_messages()
+    print(messages_bob[0])
+    if Bob.get_preference().is_item_among_top_10_percent(messages_bob[0].get_content(), argument_model.item_list):
+        Bob.send_message(Message("A2", "A1", MessagePerformative.ACCEPT, messages_bob[0].get_content()))
+    else:
+        Bob.send_message(Message("A2", "A1", MessagePerformative.ASK_WHY, messages_bob[0].get_content()))
+    
 
+
+    messages_alice= Alice.get_new_messages()
+    print(messages_alice[0])
+    
     
     
 
