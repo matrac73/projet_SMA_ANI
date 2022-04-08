@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-sys.path.append("C:/Users/killi/Desktop/Project2/mesa")
+sys.path.append("C:/Users/mathi/Bureau/projet_SMA_ANI")
 
 import math
 import random

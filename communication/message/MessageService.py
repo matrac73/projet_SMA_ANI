@@ -61,5 +61,6 @@ class MessageService:
         """ Return the agent according to the agent name given.
         """
         for agent in self.__scheduler.agents:
+            # print(agent.get_name())
             if agent.get_name() == agent_name:
                 return agent
